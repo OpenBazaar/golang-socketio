@@ -3,6 +3,7 @@ package gosocketio
 import (
 	"encoding/json"
 	"github.com/OpenBazaar/golang-socketio/protocol"
+	"strings"
 	"sync"
 	"reflect"
 )
@@ -96,6 +97,10 @@ func (m *methods) processIncomingMessage(c *Channel, msg *protocol.Message) {
 		if !f.ArgsPresent {
 			f.callFunc(c, &struct{}{})
 			return
+		}
+
+		if !strings.HasPrefix(msg.Args, "{") && !strings.HasPrefix(msg.Args, "[") {
+			msg.Args = "[" + msg.Args + "]"
 		}
 
 		data := f.getArgs()
